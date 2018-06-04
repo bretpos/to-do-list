@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ToDoList.Models.List>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>My Lists</h2>
+
+<form class="form-inline" data-bind="submit: addList">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Add a new list..." data-bind="textInput: listToAdd">
+    </div>
+    <button type="submit" class="btn btn-default" data-bind="css: { disabled: listToAdd().length === 0 }, disable: listToAdd().length === 0">
+        <span class="glyphicon glyphicon-plus"></span>
+    </button>
+</form>
+
+<ul class="nav nav-tabs" data-bind="foreach: lists">
+    <li class="nav-item" data-bind="css: { active: isActive }">
+        <a class="nav-link" href="#" data-bind="text: title, click: $parent.switchActiveList.bind($parent, $data)"></a>
+    </li>
+</ul>
+
+<form class="form-inline" data-bind="submit: addListItem">
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Add a new list item..." data-bind="textInput: listItemToAdd">
+    </div>
+    <button type="submit" class="btn btn-default" data-bind="css: { disabled: listItemToAdd().length === 0 }, disable: listItemToAdd().length === 0">
+        <span class="glyphicon glyphicon-plus"></span>
+    </button>
+</form>
+
+<button type="button" class="btn btn-sm btn-info" data-bind="click: toggleShowCompleted, text: showCompletedText">Hide Completed</button>
+
+<ul class="list-group" data-bind="foreach: listItems">
+    <li class="list-group-item" data-bind="event: { mouseover: showRemoveButton, mouseout: hideRemoveButton }">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <input type="checkbox" data-bind="checked: isCompleted, click: toggleCompleted">
+            </span>
+            <input type="text" class="form-control" data-bind="value: description, event: { blur: update }">
+            <button class="btn btn-default"
+                    data-bind="click: $parent.activeList().removeListItem.bind($parent.activeList(), listItemId), visible: showRemoveButton">
+                <span class="glyphicon glyphicon-remove text-danger"></span>
+            </button>
+        </div>
+    </li>
+</ul>
+
+<button type="button" class="btn btn-xs btn-danger" data-bind="click: deleteList">Delete List</button>
+
+@section scripts
+{
+    <script>
+        $.getJSON("/api/lists", function (data) {
+            var listsData = { lists: data };
+            ko.applyBindings(new ToDoListViewModel(listsData));
+        });
+    </script>
+}
