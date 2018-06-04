@@ -148,6 +148,8 @@
     <Compile Include="Core\IUnitOfWork.cs" />
     <Compile Include="Core\Repositories\IListsRepository.cs" />
     <Compile Include="Core\Repositories\IRepository.cs" />
+    <Compile Include="Core\Services\IListItemsService.cs" />
+    <Compile Include="Core\Services\ListItemsService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -174,7 +176,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.flatly.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

@@ -21,6 +21,7 @@
     </li>
 </ul>
 
+<!-- ko if: lists().length > 0 -->
 <form class="form-inline" data-bind="submit: addListItem">
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Add a new list item..." data-bind="textInput: listItemToAdd">
@@ -29,6 +30,7 @@
         <span class="glyphicon glyphicon-plus"></span>
     </button>
 </form>
+<!-- /ko -->
 
 <button type="button" class="btn btn-sm btn-info" data-bind="click: toggleShowCompleted, text: showCompletedText">Hide Completed</button>
 
@@ -47,7 +49,9 @@
     </li>
 </ul>
 
+<!-- ko if: lists().length > 0 -->
 <button type="button" class="btn btn-xs btn-danger" data-bind="click: deleteList">Delete List</button>
+<!-- /ko -->
 
 @section scripts
 {
@@ -55,6 +59,6 @@
         $.getJSON("/api/lists", function (data) {
             var listsData = { lists: data };
             ko.applyBindings(new ToDoListViewModel(listsData));
-        });
+        })
     </script>
 }

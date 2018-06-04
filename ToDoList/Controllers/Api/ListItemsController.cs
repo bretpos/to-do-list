@@ -1,6 +1,5 @@
-﻿using System;
-using System.Web.Http;
-using ToDoList.Core;
+﻿using System.Web.Http;
+using ToDoList.Core.Services;
 using ToDoList.Models;
 using ToDoList.Persistence;
 
@@ -8,13 +7,13 @@ namespace ToDoList.Controllers.Api
 {
     public class ListItemsController : ApiController
     {
-        private IUnitOfWork _unitOfWork;
+        private IListItemsService _listItemsService;
 
-        // Should accept an IUnitOfWork here and use dependency injection.
+        // Should accept an IListItemsService here and use dependency injection.
         // This would decouple this class from its dependencies and improve testability.
         public ListItemsController()
         {
-            _unitOfWork = new UnitOfWork(new ToDoListContext());
+            _listItemsService = new ListItemsService(new UnitOfWork(new ToDoListContext()));
         }
 
         [HttpPost]
@@ -23,9 +22,7 @@ namespace ToDoList.Controllers.Api
             if (listItem == null)
                 return BadRequest();
 
-            listItem.CreatedOn = DateTime.Now;
-            var newListItem = _unitOfWork.ListItems.Add(listItem);
-            _unitOfWork.Complete();
+            var newListItem = _listItemsService.Add(listItem);
 
             return Created($"{Request.RequestUri}/{newListItem.ListItemId}", newListItem);
         }
@@ -36,15 +33,12 @@ namespace ToDoList.Controllers.Api
             if (listItem == null)
                 return BadRequest();
 
-            var item = _unitOfWork.ListItems.Get(listItem.ListItemId);
+            var item = _listItemsService.Get(listItem.ListItemId);
 
             if (item == null)
                 return NotFound();
 
-            item.Description = listItem.Description;
-            item.IsCompleted = listItem.IsCompleted;
-
-            _unitOfWork.Complete();
+            _listItemsService.Update(item, listItem);
 
             return Ok(item);
         }
@@ -52,13 +46,12 @@ namespace ToDoList.Controllers.Api
         [HttpDelete]
         public IHttpActionResult Delete(int id)
         {
-            var listItem = _unitOfWork.ListItems.Get(id);
+            var listItem = _listItemsService.Get(id);
 
             if (listItem == null)
                 return NotFound();
 
-            _unitOfWork.ListItems.Remove(listItem);
-            _unitOfWork.Complete();
+            _listItemsService.Remove(listItem);
 
             return StatusCode(System.Net.HttpStatusCode.NoContent);
         }
