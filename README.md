@@ -1,6 +1,6 @@
 # To-Do List
 
-**To-Do List** is a web application that lets you keep track of whats important. 
+**To-Do List** is a web application that lets you keep track of what's important. 
 
 ## User Stories
 
